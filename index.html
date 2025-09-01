@@ -582,8 +582,8 @@
 
         <div class="demo-info">
             <h4>💼 Systém evidence docházky ESKA THERM</h4>
-            <p><strong>Pro zaměstnance:</strong> Přihlašte se svým uživatelským jménem a heslem</p>
-            <p><strong>Funkce:</strong> zápis docházky, hlášení volna, přehled vašich záznamů</p>
+            <p><strong>Pro zaměstnance:</strong> Přihlašte se svým uživatelským jménem a heslem pro přístup k systému</p>
+            <p><strong>Kontakt:</strong> V případě problémů s přihlášením se obraťte na svého vedoucího</p>
         </div>
 
         <div class="login-section">
@@ -592,11 +592,11 @@
                 <div class="login-form">
                     <div class="form-group">
                         <label>Uživatelské jméno</label>
-                        <input type="text" id="username" placeholder="admin nebo jan.novak">
+                        <input type="text" id="username" placeholder="Zadejte své uživatelské jméno">
                     </div>
                     <div class="form-group">
                         <label>Heslo</label>
-                        <input type="password" id="password" placeholder="admin123 nebo demo123">
+                        <input type="password" id="password" placeholder="Zadejte své heslo">
                     </div>
                     <button onclick="login()">Přihlásit se</button>
                 </div>
@@ -691,7 +691,7 @@
             </div>
         </div>
 
-        <div class="records-section">
+        <div class="records-section" id="recordsSection" style="display: none;">
             <div class="records-header">
                 <h3 class="section-title">📊 Přehled docházky</h3>
                 <div class="date-filter">
@@ -797,7 +797,7 @@
             initializeData();
             updateDateTime();
             setInterval(updateDateTime, 1000);
-            updateAttendanceTable();
+            // Tabulka se zobrazí až po přihlášení - updateAttendanceTable() se volá v login()
         });
 
         function initializeData() {
@@ -816,32 +816,33 @@
             if (!employees.find(emp => emp.username === 'admin')) {
                 employees.push({
                     id: 'admin',
-                    username: 'klampfl',
-                    password: 'Eskatherm2025',
+                    username: 'admin',
+                    password: 'VaseNoveHeslo123',  // ⚠️ ZMĚŇTE TOTO HESLO!
                     name: 'Administrátor ESKA THERM',
                     isAdmin: true
                 });
                 saveEmployees();
             }
 
-            // Vytvoření demo zaměstnanců pokud neexistují
+            // Vytvoření demo zaměstnanců pouze pro testování - ODEBERTE V OSTRÉM PROVOZU
             const demoEmployees = [
                 {
                     id: 'demo1',
                     username: 'jan.novak',
                     password: 'demo123',
-                    name: 'Jan Novák',
+                    name: 'Jan Novák (DEMO)',
                     isAdmin: false
                 },
                 {
                     id: 'demo2',
                     username: 'marie.svoboda',
                     password: 'demo123',
-                    name: 'Marie Svobodová',
+                    name: 'Marie Svobodová (DEMO)',
                     isAdmin: false
                 }
             ];
 
+            // POZNÁMKA: Tento blok odeberte v ostrém provozu
             demoEmployees.forEach(emp => {
                 if (!employees.find(e => e.username === emp.username)) {
                     employees.push(emp);
@@ -1013,10 +1014,12 @@
                 document.getElementById('statsSection').style.display = 'grid';
                 document.getElementById('actionsHeader').style.display = 'table-cell';
                 document.getElementById('exportBtn').style.display = 'inline-block';
+                document.getElementById('recordsSection').style.display = 'block';
                 updateStats();
                 updateEmployeeList();
             } else {
                 document.getElementById('attendanceForm').style.display = 'block';
+                document.getElementById('recordsSection').style.display = 'block';
                 loadCurrentUserAttendance();
             }
 
@@ -1043,6 +1046,7 @@
             document.getElementById('statsSection').style.display = 'none';
             document.getElementById('actionsHeader').style.display = 'none';
             document.getElementById('exportBtn').style.display = 'none';
+            document.getElementById('recordsSection').style.display = 'none';
 
             updateAttendanceTable();
             showAlert('Úspěšně odhlášen', 'success');
