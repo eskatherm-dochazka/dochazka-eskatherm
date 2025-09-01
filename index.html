@@ -801,6 +801,11 @@
         });
 
         function initializeData() {
+            // RESET STARÝCH DAT - odkomentujte následující řádky pro vymazání starých dat
+            // localStorage.removeItem('eskatherm_employees');
+            // localStorage.removeItem('eskatherm_attendance');
+            // console.log('Stará data byla vymazána');
+            
             // Načtení zaměstnanců z localStorage
             const storedEmployees = localStorage.getItem('eskatherm_employees');
             if (storedEmployees) {
@@ -813,15 +818,30 @@
             }
 
             // Vytvoření admin účtu pokud neexistuje
-            if (!employees.find(emp => emp.username === 'admin')) {
+            const adminExists = employees.find(emp => emp.username === 'admin');
+            if (!adminExists) {
                 employees.push({
                     id: 'admin',
-                    username: 'klampfl',
-                    password: 'Eskatherm2025',
+                    username: 'klampfl',           // ⚠️ ZMĚŇTE UŽIVATELSKÉ JMÉNO
+                    password: 'Eskatherm2025',     // ⚠️ ZMĚŇTE HESLO
                     name: 'Administrátor ESKA THERM',
                     isAdmin: true
                 });
                 saveEmployees();
+                console.log('Nový admin účet byl vytvořen');
+            } else {
+                // Aktualizace existujícího admin účtu
+                const adminIndex = employees.findIndex(emp => emp.username === 'admin');
+                if (adminIndex >= 0) {
+                    employees[adminIndex] = {
+                        ...employees[adminIndex],
+                        username: 'klampfl',           // ⚠️ ZMĚŇTE UŽIVATELSKÉ JMÉNO
+                        password: 'Eskatherm2025',     // ⚠️ ZMĚŇTE HESLO
+                        name: 'Administrátor ESKA THERM'
+                    };
+                    saveEmployees();
+                    console.log('Admin účet byl aktualizován');
+                }
             }
 
             // Vytvoření demo zaměstnanců pouze pro testování - ODEBERTE V OSTRÉM PROVOZU
@@ -1733,5 +1753,3 @@
     </script>
 </body>
 </html>
-
-
