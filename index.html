@@ -592,11 +592,15 @@
                 <div class="login-form">
                     <div class="form-group">
                         <label>Uživatelské jméno</label>
-                        <input type="text" id="username" placeholder="Zadejte své uživatelské jméno">
+                        <input type="text" id="username" placeholder="Zadejte své uživatelské jméno" autocomplete="username">
                     </div>
                     <div class="form-group">
                         <label>Heslo</label>
-                        <input type="password" id="password" placeholder="Zadejte své heslo">
+                        <input type="password" id="password" placeholder="Zadejte své heslo" autocomplete="current-password">
+                    </div>
+                    <div class="form-group" style="flex-direction: row; align-items: center; gap: 8px;">
+                        <input type="checkbox" id="rememberMe" style="width: auto; margin: 0;">
+                        <label for="rememberMe" style="margin: 0; text-transform: none; font-size: 0.9rem; color: #2d3748;">Zůstat přihlášen</label>
                     </div>
                     <button onclick="login()">Přihlásit se</button>
                 </div>
@@ -797,7 +801,9 @@
             initializeData();
             updateDateTime();
             setInterval(updateDateTime, 1000);
-            // Tabulka se zobrazí až po přihlášení - updateAttendanceTable() se volá v login()
+            
+            // Pokusit se o automatické přihlášení
+            autoLogin();
         });
 
         function initializeData() {
@@ -1000,6 +1006,7 @@
         function login() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
 
             if (!username || !password) {
                 showAlert('Prosím vyplňte uživatelské jméno a heslo!', 'error');
@@ -1013,6 +1020,65 @@
                 return;
             }
 
+            // Uložení přihlašovacích údajů pokud je zaškrtnuto "Zůstat přihlášen"
+            if (rememberMe) {
+                try {
+                    const loginData = {
+                        username: username,
+                        password: password,
+                        timestamp: Date.now(),
+                        expires: Date.now() + (30 * 24 * 60 * 60 * 1000) // 30 dní
+                    };
+                    localStorage.setItem('eskatherm_remember_login', JSON.stringify(loginData));
+                } catch (e) {
+                    console.log('Nepodařilo se uložit přihlašovací údaje:', e);
+                }
+            } else {
+                // Vymazání uložených přihlašovacích údajů
+                localStorage.removeItem('eskatherm_remember_login');
+            }
+
+            performLogin(user);
+        }
+
+        function autoLogin() {
+            try {
+                const savedLogin = localStorage.getItem('eskatherm_remember_login');
+                if (!savedLogin) return;
+
+                const loginData = JSON.parse(savedLogin);
+                
+                // Kontrola vypršení platnosti (30 dní)
+                if (Date.now() > loginData.expires) {
+                    localStorage.removeItem('eskatherm_remember_login');
+                    return;
+                }
+
+                // Pokus o automatické přihlášení
+                const user = employees.find(emp => 
+                    emp.username === loginData.username && 
+                    emp.password === loginData.password
+                );
+
+                if (user) {
+                    // Vyplnění formuláře
+                    document.getElementById('username').value = loginData.username;
+                    document.getElementById('rememberMe').checked = true;
+                    
+                    // Automatické přihlášení
+                    performLogin(user);
+                    showAlert('Automaticky přihlášen jako: ' + user.name, 'success');
+                } else {
+                    // Uživatel už neexistuje nebo změnil heslo
+                    localStorage.removeItem('eskatherm_remember_login');
+                }
+            } catch (e) {
+                console.log('Chyba při automatickém přihlášení:', e);
+                localStorage.removeItem('eskatherm_remember_login');
+            }
+        }
+
+        function performLogin(user) {
             currentUser = user.username;
             currentUserData = user;
             isBoss = user.isAdmin || false;
@@ -1048,10 +1114,8 @@
             }
 
             updateAttendanceTable();
-            showAlert('Úspěšně přihlášen jako: ' + user.name, 'success');
 
-            // Vyčištění formuláře
-            document.getElementById('username').value = '';
+            // Vyčištění hesla z formuláře (bezpečnost)
             document.getElementById('password').value = '';
         }
 
@@ -1059,6 +1123,9 @@
             currentUser = '';
             currentUserData = null;
             isBoss = false;
+
+            // Vymazání uložených přihlašovacích údajů
+            localStorage.removeItem('eskatherm_remember_login');
 
             // Zobrazení přihlašovacího formuláře
             document.getElementById('loginForm').style.display = 'block';
@@ -1071,6 +1138,11 @@
             document.getElementById('actionsHeader').style.display = 'none';
             document.getElementById('exportBtn').style.display = 'none';
             document.getElementById('recordsSection').style.display = 'none';
+
+            // Vyčištění formuláře
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('rememberMe').checked = false;
 
             updateAttendanceTable();
             showAlert('Úspěšně odhlášen', 'success');
