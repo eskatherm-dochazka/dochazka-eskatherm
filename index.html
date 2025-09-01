@@ -581,10 +581,9 @@
         </div>
 
         <div class="demo-info">
-            <h4>🚀 Testovací verze - vyzkoušejte vše!</h4>
-            <p><strong>Admin přístup:</strong> uživatel: admin | heslo: admin123</p>
-            <p><strong>Zkušební zaměstnanci:</strong> jan.novak/demo123 | marie.svoboda/demo123</p>
-            <p><strong>Test:</strong> přihlaste se jako zaměstnanec → zapište docházku → přihlaste se jako admin → upravte záznam</p>
+            <h4>💼 Systém evidence docházky ESKA THERM</h4>
+            <p><strong>Pro zaměstnance:</strong> Přihlašte se svým uživatelským jménem a heslem</p>
+            <p><strong>Funkce:</strong> zápis docházky, hlášení volna, přehled vašich záznamů</p>
         </div>
 
         <div class="login-section">
@@ -698,6 +697,7 @@
                 <div class="date-filter">
                     <input type="date" id="filterDate" onchange="filterByDate()">
                     <button class="secondary-btn" onclick="showAllRecords()">Zobrazit vše</button>
+                    <button id="exportBtn" onclick="showExportModal()" style="display: none;">📁 Export pro účetní</button>
                 </div>
             </div>
 
@@ -738,6 +738,49 @@
                     <tbody id="attendanceTableBody">
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div id="exportModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); max-width: 500px; width: 90%;">
+            <h3 style="color: #e53e3e; margin-bottom: 20px; text-align: center;">📁 Export dat pro účetní</h3>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #2d3748;">Vyberte měsíc:</label>
+                <select id="exportMonth" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #e2e8f0;">
+                    <option value="">Aktuální měsíc</option>
+                    <option value="2024-01">Leden 2024</option>
+                    <option value="2024-02">Únor 2024</option>
+                    <option value="2024-03">Březen 2024</option>
+                    <option value="2024-04">Duben 2024</option>
+                    <option value="2024-05">Květen 2024</option>
+                    <option value="2024-06">Červen 2024</option>
+                    <option value="2024-07">Červenec 2024</option>
+                    <option value="2024-08">Srpen 2024</option>
+                    <option value="2024-09">Září 2024</option>
+                    <option value="2024-10">Říjen 2024</option>
+                    <option value="2024-11">Listopad 2024</option>
+                    <option value="2024-12">Prosinec 2024</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #2d3748;">Formát souboru:</label>
+                <select id="exportFormat" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #e2e8f0;">
+                    <option value="excel">📊 Excel (.xlsx) - pro účetní</option>
+                    <option value="csv">📄 CSV - pro import do jiných systémů</option>
+                </select>
+            </div>
+
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 25px;">
+                <button onclick="exportData()" style="background: linear-gradient(45deg, #e53e3e, #c53030); color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                    💾 Stáhnout soubor
+                </button>
+                <button onclick="closeExportModal()" style="background: linear-gradient(45deg, #2d3748, #1a202c); color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                    ❌ Zrušit
+                </button>
             </div>
         </div>
     </div>
@@ -969,6 +1012,7 @@
                 document.getElementById('employeeManagement').style.display = 'block';
                 document.getElementById('statsSection').style.display = 'grid';
                 document.getElementById('actionsHeader').style.display = 'table-cell';
+                document.getElementById('exportBtn').style.display = 'inline-block';
                 updateStats();
                 updateEmployeeList();
             } else {
@@ -998,6 +1042,7 @@
             document.getElementById('attendanceForm').style.display = 'none';
             document.getElementById('statsSection').style.display = 'none';
             document.getElementById('actionsHeader').style.display = 'none';
+            document.getElementById('exportBtn').style.display = 'none';
 
             updateAttendanceTable();
             showAlert('Úspěšně odhlášen', 'success');
@@ -1431,6 +1476,233 @@
         function showAllRecords() {
             document.getElementById('filterDate').value = '';
             updateAttendanceTable();
+        }
+
+        function showExportModal() {
+            if (!isBoss) {
+                showAlert('Nemáte oprávnění exportovat data!', 'error');
+                return;
+            }
+            
+            // Naplnění měsíců dynamicky
+            const exportMonth = document.getElementById('exportMonth');
+            exportMonth.innerHTML = '<option value="">Aktuální měsíc</option>';
+            
+            const currentDate = new Date();
+            for (let i = 11; i >= 0; i--) {
+                const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const monthNames = ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 
+                                  'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'];
+                
+                const option = document.createElement('option');
+                option.value = `${year}-${month}`;
+                option.textContent = `${monthNames[date.getMonth()]} ${year}`;
+                exportMonth.appendChild(option);
+            }
+            
+            document.getElementById('exportModal').style.display = 'block';
+        }
+
+        function closeExportModal() {
+            document.getElementById('exportModal').style.display = 'none';
+        }
+
+        function exportData() {
+            const selectedMonth = document.getElementById('exportMonth').value;
+            const format = document.getElementById('exportFormat').value;
+            
+            let filteredRecords = attendanceRecords;
+            let fileName = 'dochazka_ESKA_THERM';
+            
+            if (selectedMonth) {
+                filteredRecords = attendanceRecords.filter(record => {
+                    return record.date.startsWith(selectedMonth);
+                });
+                const monthYear = selectedMonth.split('-');
+                const monthNames = ['leden', 'unor', 'brezen', 'duben', 'kveten', 'cerven', 
+                                  'cervenec', 'srpen', 'zari', 'rijen', 'listopad', 'prosinec'];
+                fileName = `dochazka_ESKA_THERM_${monthNames[parseInt(monthYear[1]) - 1]}_${monthYear[0]}`;
+            } else {
+                const currentDate = new Date();
+                const currentMonth = currentDate.toISOString().substring(0, 7);
+                filteredRecords = attendanceRecords.filter(record => {
+                    return record.date.startsWith(currentMonth);
+                });
+                const monthNames = ['leden', 'unor', 'brezen', 'duben', 'kveten', 'cerven', 
+                                  'cervenec', 'srpen', 'zari', 'rijen', 'listopad', 'prosinec'];
+                fileName = `dochazka_ESKA_THERM_${monthNames[currentDate.getMonth()]}_${currentDate.getFullYear()}`;
+            }
+            
+            if (filteredRecords.length === 0) {
+                showAlert('Žádné záznamy pro vybraný měsíc!', 'warning');
+                return;
+            }
+
+            if (format === 'excel') {
+                exportToExcel(filteredRecords, fileName);
+            } else {
+                exportToCSV(filteredRecords, fileName);
+            }
+            
+            closeExportModal();
+            showAlert(`Export dokončen! Soubor ${fileName} byl stažen.`, 'success');
+        }
+
+        function exportToCSV(records, fileName) {
+            const headers = [
+                'Datum',
+                'Zaměstnanec',
+                'Příchod',
+                'Začátek pauzy',
+                'Konec pauzy',
+                'Odchod',
+                'Celkem hodin',
+                'Typ volna',
+                'Poznámka k volnu',
+                'Stav'
+            ];
+            
+            let csv = headers.join(',') + '\n';
+            
+            records.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            records.forEach(record => {
+                const workHours = calculateWorkHours(record);
+                const status = getRecordStatus(record);
+                const vacationType = record.vacationType ? getVacationTypeText(record.vacationType) : '';
+                
+                const row = [
+                    new Date(record.date).toLocaleDateString('cs-CZ'),
+                    `"${record.employeeName}"`,
+                    record.arrival || '',
+                    record.breakStart || '',
+                    record.breakEnd || '',
+                    record.departure || '',
+                    workHours,
+                    `"${vacationType}"`,
+                    `"${record.vacationNote || ''}"`,
+                    `"${status.text}"`
+                ];
+                
+                csv += row.join(',') + '\n';
+            });
+            
+            downloadFile(csv, fileName + '.csv', 'text/csv;charset=utf-8;');
+        }
+
+        function exportToExcel(records, fileName) {
+            // Simulace Excel exportu pomocí HTML tabulky
+            let html = `
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        .header { background-color: #e53e3e; color: white; padding: 15px; text-align: center; margin-bottom: 20px; }
+                        table { border-collapse: collapse; width: 100%; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #e53e3e; color: white; font-weight: bold; }
+                        .vacation { background-color: #ffe6e6; }
+                        .summary { margin-top: 30px; padding: 15px; background-color: #f5f5f5; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>ESKA THERM s.r.o. - Evidence docházky</h1>
+                        <p>Vygenerováno: ${new Date().toLocaleDateString('cs-CZ')}</p>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Zaměstnanec</th>
+                                <th>Příchod</th>
+                                <th>Začátek pauzy</th>
+                                <th>Konec pauzy</th>
+                                <th>Odchod</th>
+                                <th>Celkem hodin</th>
+                                <th>Typ volna</th>
+                                <th>Poznámka</th>
+                                <th>Stav</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            records.sort((a, b) => new Date(a.date) - new Date(b.date));
+            let totalWorkMinutes = 0;
+            let workDays = 0;
+            let vacationDays = 0;
+            
+            records.forEach(record => {
+                const workHours = calculateWorkHours(record);
+                const status = getRecordStatus(record);
+                const vacationType = record.vacationType ? getVacationTypeText(record.vacationType) : '';
+                const isVacation = record.vacationType ? ' class="vacation"' : '';
+                
+                if (record.vacationType) {
+                    vacationDays++;
+                } else if (record.arrival && record.departure) {
+                    workDays++;
+                    // Výpočet minut pro celkový součet
+                    const arrivalTime = new Date('2000-01-01T' + record.arrival + ':00');
+                    const departureTime = new Date('2000-01-01T' + record.departure + ':00');
+                    let workMinutes = (departureTime - arrivalTime) / (1000 * 60);
+                    if (record.breakStart && record.breakEnd) {
+                        const breakStartTime = new Date('2000-01-01T' + record.breakStart + ':00');
+                        const breakEndTime = new Date('2000-01-01T' + record.breakEnd + ':00');
+                        const breakMinutes = (breakEndTime - breakStartTime) / (1000 * 60);
+                        workMinutes -= breakMinutes;
+                    }
+                    totalWorkMinutes += workMinutes;
+                }
+                
+                html += `
+                    <tr${isVacation}>
+                        <td>${new Date(record.date).toLocaleDateString('cs-CZ')}</td>
+                        <td><strong>${record.employeeName}</strong></td>
+                        <td>${record.arrival || '--'}</td>
+                        <td>${record.breakStart || '--'}</td>
+                        <td>${record.breakEnd || '--'}</td>
+                        <td>${record.departure || '--'}</td>
+                        <td><strong>${workHours}</strong></td>
+                        <td>${vacationType}</td>
+                        <td>${record.vacationNote || '--'}</td>
+                        <td>${status.text}</td>
+                    </tr>
+                `;
+            });
+            
+            const totalHours = Math.floor(totalWorkMinutes / 60);
+            const totalMinutes = Math.round(totalWorkMinutes % 60);
+            
+            html += `
+                        </tbody>
+                    </table>
+                    <div class="summary">
+                        <h3>Souhrn za období:</h3>
+                        <p><strong>Počet pracovních dnů:</strong> ${workDays}</p>
+                        <p><strong>Počet dnů volna:</strong> ${vacationDays}</p>
+                        <p><strong>Celkem odpracováno:</strong> ${totalHours}h ${totalMinutes}m</p>
+                        <p><strong>Průměr na den:</strong> ${workDays > 0 ? Math.round(totalWorkMinutes / workDays / 60 * 100) / 100 : 0}h</p>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            downloadFile(html, fileName + '.xls', 'application/vnd.ms-excel;charset=utf-8;');
+        }
+
+        function downloadFile(content, fileName, contentType) {
+            const a = document.createElement('a');
+            const file = new Blob(['\ufeff' + content], { type: contentType });
+            a.href = URL.createObjectURL(file);
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
         // Event listenery pro Enter klávesy
