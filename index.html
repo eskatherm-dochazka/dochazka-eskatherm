@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evidence docházky - ESKA THERM s.r.o.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e53e3e 0%, #2d3748 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #e53e3e;
+        }
+
+        .company-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo-square {
+            width: 60px;
+            height: 60px;
+            background: #e53e3e;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .logo-square::before {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .logo-square::after {
+            content: 'ET';
+            position: absolute;
+            color: #e53e3e;
+            font-weight: bold;
+            font-size: 16px;
+            z-index: 1;
+        }
+
+        .company-name {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #2d3748;
+            letter-spacing: 2px;
+        }
+
+        .company-tagline {
+            color: #e53e3e;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 2rem;
+            margin-top: 15px;
+        }
+
+        .demo-info {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(229, 62, 62, 0.3);
+        }
+
+        .demo-info h4 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .demo-info p {
+            margin-bottom: 8px;
+            opacity: 0.95;
+        }
+
+        .login-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            border: 3px solid #e53e3e;
+        }
+
+        .login-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .boss-badge {
+            background: linear-gradient(45deg, #e53e3e, #c53030);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .employee-badge {
+            background: linear-gradient(45deg, #2d3748, #1a202c);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select, button, input, textarea {
+            padding: 12px 18px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: inherit;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #e53e3e;
+            box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+        }
+
+        button {
+            background: linear-gradient(45deg, #e53e3e, #c53030);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(229, 62, 62, 0.4);
+        }
+
+        button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .secondary-btn {
+            background: linear-gradient(45deg, #2d3748, #1a202c) !important;
+        }
+
+        .secondary-btn:hover {
+            box-shadow: 0 8px 25px rgba(45, 55, 72, 0.4) !important;
+        }
+
+        .employee-management {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            border: 3px solid #e53e3e;
+        }
+
+        .section-title {
+            color: #e53e3e;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .employee-list {
+            display: grid;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .employee-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px;
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .employee-item:hover {
+            border-color: #e53e3e;
+            box-shadow: 0 5px 15px rgba(229, 62, 62, 0.1);
+        }
+
+        .employee-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .employee-name {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1.1rem;
+        }
+
+        .employee-username {
+            font-size: 0.9rem;
+            color: #718096;
+            font-style: italic;
+        }
+
+        .delete-btn {
+            background: linear-gradient(45deg, #e53e3e, #c53030);
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .add-employee-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+            margin-bottom: 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(229, 62, 62, 0.05), rgba(229, 62, 62, 0.1));
+            border-radius: 15px;
+            border: 2px solid rgba(229, 62, 62, 0.2);
+        }
+
+        .attendance-form {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            border: 3px solid #e53e3e;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .time-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .time-btn {
+            background: linear-gradient(45deg, #2d3748, #1a202c);
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            flex: 1;
+            border-radius: 8px;
+        }
+
+        .vacation-section {
+            background: linear-gradient(135deg, rgba(229, 62, 62, 0.08), rgba(229, 62, 62, 0.04));
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid rgba(229, 62, 62, 0.3);
+            margin-top: 25px;
+        }
+
+        .vacation-section h4 {
+            color: #e53e3e;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .vacation-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .records-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 3px solid #e53e3e;
+        }
+
+        .records-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .date-filter {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(45deg, #e53e3e, #c53030);
+            color: white;
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #2d3748;
+        }
+
+        tr:hover td {
+            background-color: rgba(229, 62, 62, 0.03);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-complete {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status-incomplete {
+            background: #fefcbf;
+            color: #744210;
+        }
+
+        .status-locked {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .status-vacation {
+            background: rgba(229, 62, 62, 0.1);
+            color: #e53e3e;
+            font-weight: bold;
+        }
+
+        .edit-btn {
+            background: linear-gradient(45deg, #2d3748, #1a202c);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            z-index: 1000;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #9ae6b4;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #fc8181;
+        }
+
+        .alert-warning {
+            background: #fefcbf;
+            color: #744210;
+            border: 2px solid #f6e05e;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(229, 62, 62, 0.08), rgba(45, 55, 72, 0.05));
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid rgba(229, 62, 62, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(229, 62, 62, 0.15);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #e53e3e;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #2d3748;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .vacation-info {
+            font-size: 0.85rem;
+            color: #e53e3e;
+            font-style: italic;
+            margin-top: 3px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .login-form, .add-employee-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .vacation-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .records-header {
+                flex-direction: column;
+            }
+            
+            .company-logo {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .company-name {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="company-logo">
+                <div class="logo-square"></div>
+                <div>
+                    <div class="company-name">ESKA THERM</div>
+                    <div class="company-tagline">S námi budete v teple</div>
+                </div>
+            </div>
+            <h1>📋 Evidence docházky</h1>
+            <div id="currentDateTime"></div>
+        </div>
+
+        <div class="demo-info">
+            <h4>🚀 Testovací verze - vyzkoušejte vše!</h4>
+            <p><strong>Admin přístup:</strong> uživatel: admin | heslo: admin123</p>
+            <p><strong>Zkušební zaměstnanci:</strong> jan.novak/demo123 | marie.svoboda/demo123</p>
+            <p><strong>Test:</strong> přihlaste se jako zaměstnanec → zapište docházku → přihlaste se jako admin → upravte záznam</p>
+        </div>
+
+        <div class="login-section">
+            <div id="loginForm">
+                <h3 class="section-title">🔐 Přihlášení do systému</h3>
+                <div class="login-form">
+                    <div class="form-group">
+                        <label>Uživatelské jméno</label>
+                        <input type="text" id="username" placeholder="admin nebo jan.novak">
+                    </div>
+                    <div class="form-group">
+                        <label>Heslo</label>
+                        <input type="password" id="password" placeholder="admin123 nebo demo123">
+                    </div>
+                    <button onclick="login()">Přihlásit se</button>
+                </div>
+            </div>
+
+            <div id="userInfo" style="display: none;">
+                <div class="user-info">
+                    <span id="currentUserDisplay">Nepřihlášen</span>
+                    <span id="userBadge" style="display: none;"></span>
+                    <button class="secondary-btn" onclick="logout()">Odhlásit se</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="employeeManagement" class="employee-management" style="display: none;">
+            <h3 class="section-title">👥 Správa zaměstnanců</h3>
+            <div class="add-employee-form">
+                <div class="form-group">
+                    <label>Celé jméno</label>
+                    <input type="text" id="newEmployeeName" placeholder="Petr Dvořák">
+                </div>
+                <div class="form-group">
+                    <label>Uživatelské jméno</label>
+                    <input type="text" id="newEmployeeUsername" placeholder="petr.dvorak">
+                </div>
+                <div class="form-group">
+                    <label>Heslo</label>
+                    <input type="password" id="newEmployeePassword" placeholder="heslo123">
+                </div>
+                <button onclick="addEmployee()">Přidat zaměstnance</button>
+            </div>
+            <div id="employeeList" class="employee-list"></div>
+        </div>
+
+        <div id="attendanceForm" class="attendance-form" style="display: none;">
+            <h3 class="section-title">⏰ Záznam docházky</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Příchod do práce</label>
+                    <input type="time" id="arrivalTime">
+                    <div class="time-buttons">
+                        <button class="time-btn" onclick="setCurrentTime('arrivalTime')">📍 Teď</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Začátek pauzy</label>
+                    <input type="time" id="breakStart">
+                    <div class="time-buttons">
+                        <button class="time-btn" onclick="setCurrentTime('breakStart')">📍 Teď</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Konec pauzy</label>
+                    <input type="time" id="breakEnd">
+                    <div class="time-buttons">
+                        <button class="time-btn" onclick="setCurrentTime('breakEnd')">📍 Teď</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Odchod z práce</label>
+                    <input type="time" id="departureTime">
+                    <div class="time-buttons">
+                        <button class="time-btn" onclick="setCurrentTime('departureTime')">📍 Teď</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="vacation-section">
+                <h4>🏖️ Hlášení volna / dovolené</h4>
+                <div class="vacation-grid">
+                    <div class="form-group">
+                        <label>Typ volna</label>
+                        <select id="vacationType" onchange="toggleVacationMode()">
+                            <option value="">Dnes jsem v práci</option>
+                            <option value="dovolena">🏖️ Dovolená</option>
+                            <option value="nemoc">🤒 Nemocenská</option>
+                            <option value="lekarka">🏥 Návštěva lékaře</option>
+                            <option value="osobni">👤 Osobní volno</option>
+                            <option value="sluzebni">🚗 Služební cesta</option>
+                            <option value="jine">❓ Jiný důvod</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Poznámka k volnu</label>
+                        <textarea id="vacationNote" placeholder="Důvod volna, kontakt v případě nutnosti..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 25px;">
+                <button onclick="saveAttendance()" id="saveBtn">💾 Uložit záznam</button>
+            </div>
+        </div>
+
+        <div class="records-section">
+            <div class="records-header">
+                <h3 class="section-title">📊 Přehled docházky</h3>
+                <div class="date-filter">
+                    <input type="date" id="filterDate" onchange="filterByDate()">
+                    <button class="secondary-btn" onclick="showAllRecords()">Zobrazit vše</button>
+                </div>
+            </div>
+
+            <div id="statsSection" class="stats-grid" style="display: none;">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalEmployees">0</div>
+                    <div class="stat-label">Celkem zaměstnanců</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="todayPresent">0</div>
+                    <div class="stat-label">Dnes v práci</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="todayVacation">0</div>
+                    <div class="stat-label">Dnes na volnu</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="avgArrival">--:--</div>
+                    <div class="stat-label">Průměrný příchod</div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="attendanceTable">
+                    <thead>
+                        <tr>
+                            <th>Datum</th>
+                            <th>Zaměstnanec</th>
+                            <th>Příchod</th>
+                            <th>Pauza</th>
+                            <th>Odchod</th>
+                            <th>Volno/Důvod</th>
+                            <th>Celkem hodin</th>
+                            <th>Stav</th>
+                            <th id="actionsHeader" style="display: none;">Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendanceTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = '';
+        let currentUserData = null;
+        let isBoss = false;
+        let employees = [];
+        let attendanceRecords = [];
+        let alertTimeout = null;
+
+        window.addEventListener('load', function() {
+            initializeData();
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            updateAttendanceTable();
+        });
+
+        function initializeData() {
+            // Načtení zaměstnanců z localStorage
+            const storedEmployees = localStorage.getItem('eskatherm_employees');
+            if (storedEmployees) {
+                try {
+                    employees = JSON.parse(storedEmployees);
+                } catch (e) {
+                    employees = [];
+                    console.log('Chyba při načítání zaměstnanců:', e);
+                }
+            }
+
+            // Vytvoření admin účtu pokud neexistuje
+            if (!employees.find(emp => emp.username === 'admin')) {
+                employees.push({
+                    id: 'admin',
+                    username: 'admin',
+                    password: 'admin123',
+                    name: 'Administrátor ESKA THERM',
+                    isAdmin: true
+                });
+                saveEmployees();
+            }
+
+            // Vytvoření demo zaměstnanců pokud neexistují
+            const demoEmployees = [
+                {
+                    id: 'demo1',
+                    username: 'jan.novak',
+                    password: 'demo123',
+                    name: 'Jan Novák',
+                    isAdmin: false
+                },
+                {
+                    id: 'demo2',
+                    username: 'marie.svoboda',
+                    password: 'demo123',
+                    name: 'Marie Svobodová',
+                    isAdmin: false
+                }
+            ];
+
+            demoEmployees.forEach(emp => {
+                if (!employees.find(e => e.username === emp.username)) {
+                    employees.push(emp);
+                }
+            });
+
+            // Načtení záznamů docházky
+            const storedRecords = localStorage.getItem('eskatherm_attendance');
+            if (storedRecords) {
+                try {
+                    attendanceRecords = JSON.parse(storedRecords);
+                } catch (e) {
+                    attendanceRecords = [];
+                    console.log('Chyba při načítání docházky:', e);
+                }
+            }
+
+            // Vytvoření demo záznamů
+            if (attendanceRecords.length === 0) {
+                createDemoRecords();
+            }
+
+            saveEmployees();
+            saveAttendanceRecords();
+            updateEmployeeList();
+        }
+
+        function createDemoRecords() {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const twoDaysAgo = new Date(today);
+            twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+            
+            attendanceRecords = [
+                {
+                    date: formatDate(yesterday),
+                    employeeId: 'demo1',
+                    employeeName: 'Jan Novák',
+                    arrival: '07:30',
+                    breakStart: '12:00',
+                    breakEnd: '12:30',
+                    departure: '15:30',
+                    vacationType: '',
+                    vacationNote: '',
+                    isLocked: true
+                },
+                {
+                    date: formatDate(yesterday),
+                    employeeId: 'demo2',
+                    employeeName: 'Marie Svobodová',
+                    arrival: '',
+                    breakStart: '',
+                    breakEnd: '',
+                    departure: '',
+                    vacationType: 'dovolena',
+                    vacationNote: 'Rodinná dovolená u moře',
+                    isLocked: true
+                },
+                {
+                    date: formatDate(twoDaysAgo),
+                    employeeId: 'demo1',
+                    employeeName: 'Jan Novák',
+                    arrival: '08:00',
+                    breakStart: '12:15',
+                    breakEnd: '12:45',
+                    departure: '16:00',
+                    vacationType: '',
+                    vacationNote: '',
+                    isLocked: true
+                }
+            ];
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('currentDateTime').textContent = now.toLocaleDateString('cs-CZ', options);
+        }
+
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function showAlert(message, type) {
+            // Odstranit existující alert
+            const existingAlert = document.querySelector('.alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+
+            if (alertTimeout) {
+                clearTimeout(alertTimeout);
+            }
+
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            
+            document.body.appendChild(alert);
+
+            alertTimeout = setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 4000);
+        }
+
+        function saveEmployees() {
+            try {
+                localStorage.setItem('eskatherm_employees', JSON.stringify(employees));
+            } catch (e) {
+                console.error('Chyba při ukládání zaměstnanců:', e);
+                showAlert('Chyba při ukládání dat!', 'error');
+            }
+        }
+
+        function saveAttendanceRecords() {
+            try {
+                localStorage.setItem('eskatherm_attendance', JSON.stringify(attendanceRecords));
+            } catch (e) {
+                console.error('Chyba při ukládání docházky:', e);
+                showAlert('Chyba při ukládání dat!', 'error');
+            }
+        }
+
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                showAlert('Prosím vyplňte uživatelské jméno a heslo!', 'error');
+                return;
+            }
+
+            const user = employees.find(emp => emp.username === username && emp.password === password);
+            
+            if (!user) {
+                showAlert('Nesprávné uživatelské jméno nebo heslo!', 'error');
+                return;
+            }
+
+            currentUser = user.username;
+            currentUserData = user;
+            isBoss = user.isAdmin || false;
+
+            // Skrytí přihlašovacího formuláře
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('userInfo').style.display = 'block';
+            
+            // Zobrazení uživatelských informací
+            document.getElementById('currentUserDisplay').textContent = user.name;
+            const badge = document.getElementById('userBadge');
+            badge.style.display = 'inline-block';
+            badge.textContent = isBoss ? 'ADMIN' : 'ZAMĚSTNANEC';
+            badge.className = isBoss ? 'boss-badge' : 'employee-badge';
+
+            // Zobrazení příslušných sekcí
+            if (isBoss) {
+                document.getElementById('employeeManagement').style.display = 'block';
+                document.getElementById('statsSection').style.display = 'grid';
+                document.getElementById('actionsHeader').style.display = 'table-cell';
+                updateStats();
+                updateEmployeeList();
+            } else {
+                document.getElementById('attendanceForm').style.display = 'block';
+                loadCurrentUserAttendance();
+            }
+
+            updateAttendanceTable();
+            showAlert('Úspěšně přihlášen jako: ' + user.name, 'success');
+
+            // Vyčištění formuláře
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        function logout() {
+            currentUser = '';
+            currentUserData = null;
+            isBoss = false;
+
+            // Zobrazení přihlašovacího formuláře
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('userInfo').style.display = 'none';
+
+            // Skrytí všech sekcí
+            document.getElementById('employeeManagement').style.display = 'none';
+            document.getElementById('attendanceForm').style.display = 'none';
+            document.getElementById('statsSection').style.display = 'none';
+            document.getElementById('actionsHeader').style.display = 'none';
+
+            updateAttendanceTable();
+            showAlert('Úspěšně odhlášen', 'success');
+        }
+
+        function addEmployee() {
+            if (!isBoss) {
+                showAlert('Nemáte oprávnění přidávat zaměstnance!', 'error');
+                return;
+            }
+
+            const name = document.getElementById('newEmployeeName').value.trim();
+            const username = document.getElementById('newEmployeeUsername').value.trim();
+            const password = document.getElementById('newEmployeePassword').value;
+
+            if (!name || !username || !password) {
+                showAlert('Prosím vyplňte všechna pole!', 'error');
+                return;
+            }
+
+            if (employees.find(emp => emp.username === username)) {
+                showAlert('Uživatelské jméno již existuje!', 'error');
+                return;
+            }
+
+            const newEmployee = {
+                id: Date.now().toString(),
+                username: username,
+                password: password,
+                name: name,
+                isAdmin: false
+            };
+
+            employees.push(newEmployee);
+            saveEmployees();
+            updateEmployeeList();
+            updateStats();
+
+            // Vyčištění formuláře
+            document.getElementById('newEmployeeName').value = '';
+            document.getElementById('newEmployeeUsername').value = '';
+            document.getElementById('newEmployeePassword').value = '';
+
+            showAlert('Zaměstnanec byl úspěšně přidán!', 'success');
+        }
+
+        function deleteEmployee(employeeId) {
+            if (!isBoss) {
+                showAlert('Nemáte oprávnění mazat zaměstnance!', 'error');
+                return;
+            }
+
+            if (employeeId === 'admin') {
+                showAlert('Admin účet nelze smazat!', 'error');
+                return;
+            }
+
+            const employee = employees.find(emp => emp.id === employeeId);
+            if (!employee) {
+                showAlert('Zaměstnanec nenalezen!', 'error');
+                return;
+            }
+
+            if (confirm('Opravdu chcete smazat zaměstnance ' + employee.name + '? Všechny jeho záznamy budou také smazány.')) {
+                // Smazání zaměstnance
+                employees = employees.filter(emp => emp.id !== employeeId);
+                
+                // Smazání všech záznamů tohoto zaměstnance
+                attendanceRecords = attendanceRecords.filter(record => record.employeeId !== employeeId);
+                
+                saveEmployees();
+                saveAttendanceRecords();
+                updateEmployeeList();
+                updateAttendanceTable();
+                updateStats();
+                
+                showAlert('Zaměstnanec byl smazán!', 'success');
+            }
+        }
+
+        function updateEmployeeList() {
+            if (!isBoss) return;
+
+            const employeeList = document.getElementById('employeeList');
+            employeeList.innerHTML = '';
+
+            const regularEmployees = employees.filter(emp => !emp.isAdmin);
+            
+            if (regularEmployees.length === 0) {
+                employeeList.innerHTML = '<p style="text-align: center; color: #718096; font-style: italic; padding: 20px;">Žádní zaměstnanci nejsou přidáni. Přidejte je pomocí formuláře výše.</p>';
+                return;
+            }
+
+            regularEmployees.forEach(employee => {
+                const employeeItem = document.createElement('div');
+                employeeItem.className = 'employee-item';
+                employeeItem.innerHTML = `
+                    <div class="employee-info">
+                        <div class="employee-name">${employee.name}</div>
+                        <div class="employee-username">Přihlášení: ${employee.username} | Heslo: ${employee.password}</div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteEmployee('${employee.id}')">🗑️ Smazat</button>
+                `;
+                employeeList.appendChild(employeeItem);
+            });
+        }
+
+        function toggleVacationMode() {
+            const vacationType = document.getElementById('vacationType').value;
+            const timeInputs = ['arrivalTime', 'breakStart', 'breakEnd', 'departureTime'];
+            const isVacation = vacationType !== '';
+
+            timeInputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                input.disabled = isVacation;
+                if (isVacation) {
+                    input.value = '';
+                }
+            });
+
+            // Změna barvy formuláře když je volno
+            const formGrid = document.querySelector('.form-grid');
+            if (isVacation) {
+                formGrid.style.opacity = '0.5';
+            } else {
+                formGrid.style.opacity = '1';
+            }
+        }
+
+        function loadCurrentUserAttendance() {
+            const today = formatDate(new Date());
+            const todayRecord = attendanceRecords.find(r => 
+                r.date === today && r.employeeId === currentUserData.id
+            );
+
+            if (todayRecord && !isRecordLocked(todayRecord)) {
+                document.getElementById('arrivalTime').value = todayRecord.arrival || '';
+                document.getElementById('breakStart').value = todayRecord.breakStart || '';
+                document.getElementById('breakEnd').value = todayRecord.breakEnd || '';
+                document.getElementById('departureTime').value = todayRecord.departure || '';
+                document.getElementById('vacationType').value = todayRecord.vacationType || '';
+                document.getElementById('vacationNote').value = todayRecord.vacationNote || '';
+                
+                toggleVacationMode();
+            } else {
+                // Vyčištění formuláře
+                document.getElementById('arrivalTime').value = '';
+                document.getElementById('breakStart').value = '';
+                document.getElementById('breakEnd').value = '';
+                document.getElementById('departureTime').value = '';
+                document.getElementById('vacationType').value = '';
+                document.getElementById('vacationNote').value = '';
+            }
+
+            const isLocked = todayRecord && isRecordLocked(todayRecord);
+            const inputs = ['arrivalTime', 'breakStart', 'breakEnd', 'departureTime', 'vacationType', 'vacationNote'];
+            const saveBtn = document.getElementById('saveBtn');
+            
+            inputs.forEach(inputId => {
+                document.getElementById(inputId).disabled = isLocked;
+            });
+            saveBtn.disabled = isLocked;
+
+            if (isLocked) {
+                showAlert('Dnešní záznam je již uzamčen a nelze ho upravovat', 'warning');
+            }
+        }
+
+        function isRecordLocked(record) {
+            const recordDate = new Date(record.date + 'T00:00:00');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return recordDate < today || record.isLocked;
+        }
+
+        function setCurrentTime(inputId) {
+            const now = new Date();
+            const timeString = now.toTimeString().substr(0, 5);
+            document.getElementById(inputId).value = timeString;
+        }
+
+        function saveAttendance() {
+            if (!currentUserData) {
+                showAlert('Nejste přihlášen!', 'error');
+                return;
+            }
+
+            const today = formatDate(new Date());
+            const arrival = document.getElementById('arrivalTime').value;
+            const breakStart = document.getElementById('breakStart').value;
+            const breakEnd = document.getElementById('breakEnd').value;
+            const departure = document.getElementById('departureTime').value;
+            const vacationType = document.getElementById('vacationType').value;
+            const vacationNote = document.getElementById('vacationNote').value;
+
+            // Pokud je na volnu, nepotřebujeme časy
+            if (!vacationType && !arrival) {
+                showAlert('Příchod je povinný, pokud nejste na volnu!', 'error');
+                return;
+            }
+
+            // Validace časů pouze pokud není na volnu
+            if (!vacationType) {
+                if (breakStart && breakEnd && breakStart >= breakEnd) {
+                    showAlert('Konec pauzy musí být po začátku pauzy!', 'error');
+                    return;
+                }
+
+                if (departure && arrival >= departure) {
+                    showAlert('Odchod musí být po příchodu!', 'error');
+                    return;
+                }
+            }
+
+            // Najít existující záznam pro dnešní den
+            let existingRecordIndex = attendanceRecords.findIndex(r => 
+                r.date === today && r.employeeId === currentUserData.id
+            );
+
+            const recordData = {
+                date: today,
+                employeeId: currentUserData.id,
+                employeeName: currentUserData.name,
+                arrival: vacationType ? '' : arrival,
+                breakStart: vacationType ? '' : breakStart,
+                breakEnd: vacationType ? '' : breakEnd,
+                departure: vacationType ? '' : departure,
+                vacationType: vacationType,
+                vacationNote: vacationNote,
+                isLocked: false
+            };
+
+            if (existingRecordIndex >= 0) {
+                // Kontrola uzamčení
+                if (isRecordLocked(attendanceRecords[existingRecordIndex])) {
+                    showAlert('Tento záznam je již uzamčen a nelze ho upravovat!', 'error');
+                    return;
+                }
+                attendanceRecords[existingRecordIndex] = recordData;
+            } else {
+                attendanceRecords.push(recordData);
+            }
+
+            saveAttendanceRecords();
+            updateAttendanceTable();
+            
+            if (isBoss) {
+                updateStats();
+            }
+            
+            const message = vacationType ? 'Volno bylo úspěšně nahlášeno!' : 'Docházka byla úspěšně uložena!';
+            showAlert(message, 'success');
+        }
+
+        function editRecord(index) {
+            if (!isBoss) {
+                showAlert('Nemáte oprávnění upravovat záznamy!', 'error');
+                return;
+            }
+
+            const record = attendanceRecords[index];
+            
+            // Pokud je záznam uzamčen
+            if (isRecordLocked(record)) {
+                if (!confirm('Tento záznam je uzamčen. Opravdu ho chcete upravit?')) {
+                    return;
+                }
+            }
+
+            const newArrival = prompt('Příchod (HH:MM):', record.arrival || '');
+            if (newArrival === null) return;
+
+            const newBreakStart = prompt('Začátek pauzy (HH:MM):', record.breakStart || '');
+            if (newBreakStart === null) return;
+
+            const newBreakEnd = prompt('Konec pauzy (HH:MM):', record.breakEnd || '');
+            if (newBreakEnd === null) return;
+
+            const newDeparture = prompt('Odchod (HH:MM):', record.departure || '');
+            if (newDeparture === null) return;
+
+            // Aktualizace záznamu
+            attendanceRecords[index] = {
+                ...record,
+                arrival: newArrival,
+                breakStart: newBreakStart,
+                breakEnd: newBreakEnd,
+                departure: newDeparture
+            };
+
+            saveAttendanceRecords();
+            updateAttendanceTable();
+            updateStats();
+            showAlert('Záznam byl úspěšně upraven!', 'success');
+        }
+
+        function calculateWorkHours(record) {
+            if (!record.arrival || !record.departure || record.vacationType) {
+                return '--';
+            }
+
+            const arrivalTime = new Date('2000-01-01T' + record.arrival + ':00');
+            const departureTime = new Date('2000-01-01T' + record.departure + ':00');
+            
+            let workMinutes = (departureTime - arrivalTime) / (1000 * 60);
+
+            // Odečtení pauzy
+            if (record.breakStart && record.breakEnd) {
+                const breakStartTime = new Date('2000-01-01T' + record.breakStart + ':00');
+                const breakEndTime = new Date('2000-01-01T' + record.breakEnd + ':00');
+                const breakMinutes = (breakEndTime - breakStartTime) / (1000 * 60);
+                workMinutes -= breakMinutes;
+            }
+
+            const hours = Math.floor(workMinutes / 60);
+            const minutes = Math.round(workMinutes % 60);
+            return hours + 'h ' + minutes + 'm';
+        }
+
+        function getRecordStatus(record) {
+            if (record.vacationType) {
+                return { text: 'Volno', class: 'status-vacation' };
+            }
+            
+            const hasAllFields = record.arrival && record.departure && record.breakStart && record.breakEnd;
+            const isLocked = isRecordLocked(record);
+
+            if (isLocked) {
+                return { text: 'Uzamčeno', class: 'status-locked' };
+            } else if (hasAllFields) {
+                return { text: 'Kompletní', class: 'status-complete' };
+            } else {
+                return { text: 'Neúplné', class: 'status-incomplete' };
+            }
+        }
+
+        function getVacationTypeText(vacationType) {
+            const types = {
+                'dovolena': '🏖️ Dovolená',
+                'nemoc': '🤒 Nemocenská',
+                'lekarka': '🏥 Návštěva lékaře',
+                'osobni': '👤 Osobní volno',
+                'sluzebni': '🚗 Služební cesta',
+                'jine': '❓ Jiný důvod'
+            };
+            return types[vacationType] || '--';
+        }
+
+        function updateAttendanceTable() {
+            const tbody = document.getElementById('attendanceTableBody');
+            tbody.innerHTML = '';
+
+            let filteredRecords = [...attendanceRecords];
+            const filterDate = document.getElementById('filterDate').value;
+            
+            if (filterDate) {
+                filteredRecords = attendanceRecords.filter(r => r.date === filterDate);
+            }
+
+            // Seřadit podle data (nejnovější první)
+            filteredRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            filteredRecords.forEach((record, filteredIndex) => {
+                const originalIndex = attendanceRecords.indexOf(record);
+                const row = document.createElement('tr');
+                const status = getRecordStatus(record);
+                const workHours = calculateWorkHours(record);
+                
+                const breakText = record.breakStart && record.breakEnd ? 
+                    record.breakStart + '-' + record.breakEnd : '--';
+
+                const vacationText = record.vacationType ? 
+                    getVacationTypeText(record.vacationType) : '--';
+
+                row.innerHTML = `
+                    <td>${new Date(record.date).toLocaleDateString('cs-CZ')}</td>
+                    <td><strong>${record.employeeName}</strong></td>
+                    <td>${record.arrival || '--'}</td>
+                    <td>${breakText}</td>
+                    <td>${record.departure || '--'}</td>
+                    <td>${vacationText}${record.vacationNote ? '<div class="vacation-info">' + record.vacationNote + '</div>' : ''}</td>
+                    <td><strong>${workHours}</strong></td>
+                    <td><span class="status-badge ${status.class}">${status.text}</span></td>
+                    ${isBoss ? '<td><button class="edit-btn" onclick="editRecord(' + originalIndex + ')">✏️ Upravit</button></td>' : ''}
+                `;
+                tbody.appendChild(row);
+            });
+
+            if (filteredRecords.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="' + (isBoss ? 9 : 8) + '" style="text-align: center; color: #718096; font-style: italic; padding: 40px;">Žádné záznamy nenalezeny</td>';
+                tbody.appendChild(row);
+            }
+        }
+
+        function updateStats() {
+            if (!isBoss) return;
+
+            const today = formatDate(new Date());
+            const todayRecords = attendanceRecords.filter(r => r.date === today);
+            const presentToday = todayRecords.filter(r => !r.vacationType);
+            const vacationToday = todayRecords.filter(r => r.vacationType);
+            
+            document.getElementById('totalEmployees').textContent = employees.filter(e => !e.isAdmin).length;
+            document.getElementById('todayPresent').textContent = presentToday.length;
+            document.getElementById('todayVacation').textContent = vacationToday.length;
+
+            // Průměrný příchod
+            const arrivals = presentToday.filter(r => r.arrival).map(r => r.arrival);
+            if (arrivals.length > 0) {
+                const avgMinutes = arrivals.reduce((sum, time) => {
+                    const parts = time.split(':');
+                    const hours = parseInt(parts[0]);
+                    const minutes = parseInt(parts[1]);
+                    return sum + hours * 60 + minutes;
+                }, 0) / arrivals.length;
+                
+                const avgHours = Math.floor(avgMinutes / 60);
+                const avgMins = Math.round(avgMinutes % 60);
+                const avgTime = (avgHours < 10 ? '0' : '') + avgHours + ':' + (avgMins < 10 ? '0' : '') + avgMins;
+                document.getElementById('avgArrival').textContent = avgTime;
+            } else {
+                document.getElementById('avgArrival').textContent = '--:--';
+            }
+        }
+
+        function filterByDate() {
+            updateAttendanceTable();
+        }
+
+        function showAllRecords() {
+            document.getElementById('filterDate').value = '';
+            updateAttendanceTable();
+        }
+
+        // Event listenery pro Enter klávesy
+        document.addEventListener('DOMContentLoaded', function() {
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            
+            if (usernameInput) {
+                usernameInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        login();
+                    }
+                });
+            }
+            
+            if (passwordInput) {
+                passwordInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        login();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
