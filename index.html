@@ -1035,11 +1035,15 @@
                 document.getElementById('actionsHeader').style.display = 'table-cell';
                 document.getElementById('exportBtn').style.display = 'inline-block';
                 document.getElementById('recordsSection').style.display = 'block';
+                document.getElementById('showAllBtn').textContent = 'Zobrazit vše';
+                document.getElementById('recordsTitle').textContent = '📊 Přehled docházky - všichni zaměstnanci';
                 updateStats();
                 updateEmployeeList();
             } else {
                 document.getElementById('attendanceForm').style.display = 'block';
                 document.getElementById('recordsSection').style.display = 'block';
+                document.getElementById('showAllBtn').textContent = 'Moje záznamy';
+                document.getElementById('recordsTitle').textContent = '📊 Moje docházka';
                 loadCurrentUserAttendance();
             }
 
@@ -1420,10 +1424,16 @@
             tbody.innerHTML = '';
 
             let filteredRecords = [...attendanceRecords];
+            
+            // Pokud není admin, zobrazit pouze záznamy aktuálního uživatele
+            if (!isBoss && currentUserData) {
+                filteredRecords = attendanceRecords.filter(r => r.employeeId === currentUserData.id);
+            }
+            
             const filterDate = document.getElementById('filterDate').value;
             
             if (filterDate) {
-                filteredRecords = attendanceRecords.filter(r => r.date === filterDate);
+                filteredRecords = filteredRecords.filter(r => r.date === filterDate);
             }
 
             // Seřadit podle data (nejnovější první)
@@ -1456,8 +1466,12 @@
             });
 
             if (filteredRecords.length === 0) {
+                const emptyMessage = !isBoss && currentUserData ? 
+                    'Nemáte zatím žádné záznamy docházky' : 
+                    'Žádné záznamy nenalezeny';
+                    
                 const row = document.createElement('tr');
-                row.innerHTML = '<td colspan="' + (isBoss ? 9 : 8) + '" style="text-align: center; color: #718096; font-style: italic; padding: 40px;">Žádné záznamy nenalezeny</td>';
+                row.innerHTML = '<td colspan="' + (isBoss ? 9 : 8) + '" style="text-align: center; color: #718096; font-style: italic; padding: 40px;">' + emptyMessage + '</td>';
                 tbody.appendChild(row);
             }
         }
@@ -1500,6 +1514,13 @@
         function showAllRecords() {
             document.getElementById('filterDate').value = '';
             updateAttendanceTable();
+        }
+
+        function showEmployeeRecords() {
+            // Funkce pro zobrazení pouze záznamů aktuálního zaměstnance
+            if (!isBoss && currentUserData) {
+                updateAttendanceTable(); // Automaticky filtruje podle uživatele
+            }
         }
 
         function showExportModal() {
